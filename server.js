@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const request = require('request')
+const req = require('request')
 
 const app = express()
 
@@ -12,7 +12,9 @@ app.get('/', (request, response) => {
 })
 
 app.post('/subscribe', (request, response) => {
-    if (request.body.captcha === undefined || request.body.captcha === '' || request.body.captcha === null){
+    if (request.body.captcha === undefined || 
+        request.body.captcha === '' || 
+        request.body.captcha === null){
         return response.json({"success": false, "message": "Please select captcha"})
     }
 
@@ -23,7 +25,8 @@ app.post('/subscribe', (request, response) => {
     const verifyUrl = `https://google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${request.body.captcha}&remoteip=${request.connection.remoteAddress}`
 
     //Make Request to VerifyURL
-    request(verifyUrl, (err, response, body) => {
+    req(verifyUrl, (err, res, body) => {
+        if (err) throw err
         body = JSON.parse(body)
 
         //If Not Successfully
@@ -34,6 +37,10 @@ app.post('/subscribe', (request, response) => {
         //If Successfully
         return response.json({"success": true, "message": "Captcha passed"})
     })
+})
+
+app.use('*', (request, response) => {
+    response.status(404).send("404 Error")
 })
 
 app.listen(3000, () => {
