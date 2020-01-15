@@ -44,5 +44,5 @@ app.use('*', (request, response) => {
 })
 
 app.listen(3000, () => {
-    console.log('Server started on port 3000')
+    console.log('Server started on port 3000. Please open http://localhost:3000/')
 })
